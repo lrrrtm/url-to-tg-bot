@@ -24,7 +24,7 @@ async def get_ans():
 @app.post("/upl")
 async def post_upl(m: str):
     global ANSWERS
-    ANSWERS[f"{datetime.now().strftime("%H:%M:%S")} <-"] = m
+    ANSWERS[f"{datetime.now().strftime('%H:%M:%S')} <-"] = m
     return "OK"
 
 
@@ -38,9 +38,9 @@ async def post_msg(m: str):
     }
     response = requests.post(url, json=payload)
     if response.status_code == 200:
-        ANSWERS[f"{datetime.now().strftime("%H:%M:%S")} OK ->"] = m
+        ANSWERS[f"{datetime.now().strftime('%H:%M:%S')} OK ->"] = m
     else:
-        ANSWERS[f"{datetime.now().strftime("%H:%M:%S")} ER ->"] = m
+        ANSWERS[f"{datetime.now().strftime('%H:%M:%S')} ER ->"] = m
     return RedirectResponse(url="/ans")
 
 # Определение корневой страницы с формой загрузки файла
