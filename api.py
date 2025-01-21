@@ -14,6 +14,9 @@ CHAT_ID = os.getenv('CHAT_ID')
 app = FastAPI()
 ANSWERS = {}
 
+@app.get("/")
+async def root():
+    return RedirectResponse(url='/docs')
 
 @app.get("/ans")
 async def get_ans():
@@ -74,4 +77,4 @@ async def send_files(files: list[UploadFile] = File(...)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=10)

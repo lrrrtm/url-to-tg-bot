@@ -12,7 +12,7 @@ from aiogram.client.default import DefaultBotProperties
 
 logging.basicConfig(level=logging.DEBUG)
 
-URL = "http://127.0.0.1:8000/upl?m={0}"
+URL = "http://127.0.0.1:10/upl?m={0}"
 
 load_dotenv()
 
@@ -20,7 +20,7 @@ bot = Bot(token=os.getenv('BOT_API_KEY'), default=DefaultBotProperties(parse_mod
 dp = Dispatcher()
 
 
-@dp.message(Command("a"))
+@dp.message()
 async def answer(message: types.Message):
     answer_text = message.text.strip("/a ")
     resp = requests.post(
