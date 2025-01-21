@@ -3,7 +3,8 @@ import os
 import requests
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
+from fastapi.responses import HTMLResponse
 from datetime import datetime
 
 load_dotenv()
@@ -36,6 +37,35 @@ async def post_msg(m: str):
     }
     response = requests.post(url, json=payload)
     return response.json()['ok']
+
+# Определение корневой страницы с формой загрузки файла
+@app.get("/pdf", response_class=HTMLResponse)
+async def get_upload_form():
+    return """
+    <html>
+        <body>
+            <form action="/send-files/" method="post" enctype="multipart/form-data">
+                <input type="file" name="files" multiple>
+                <input type="submit" value="Отправить">
+            </form>
+        </body>
+    </html>
+    """
+
+
+
+
+@app.post("/send-files")
+async def send_files(files: list[UploadFile] = File(...)):
+    responses = []
+    for file in files:
+        contents = await file.read()
+        url = f"https://api.telegram.org/bot{TELEGRAM_BOT_API}/sendDocument"
+        files_data = {"document": (file.filename, contents)}
+        data = {"chat_id": CHAT_ID}
+        response = requests.post(url, files=files_data, data=data)
+        responses.append(response.json().get('ok'))
+    return {"responses": responses}
 
 
 if __name__ == "__main__":
