@@ -20,9 +20,9 @@ bot = Bot(token=os.getenv('BOT_API_KEY'), default=DefaultBotProperties(parse_mod
 dp = Dispatcher()
 
 
-@dp.message(Command("answer"))
+@dp.message(Command("a"))
 async def answer(message: types.Message):
-    answer_text = message.text.strip("/answer ")
+    answer_text = message.text.strip("/a ")
     resp = requests.post(
         url=URL.format(answer_text),
     )

@@ -4,7 +4,7 @@ import requests
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from datetime import datetime
 
 load_dotenv()
@@ -24,19 +24,24 @@ async def get_ans():
 @app.post("/upl")
 async def post_upl(m: str):
     global ANSWERS
-    ANSWERS[datetime.now().strftime("%H:%M:%S")] = m
+    ANSWERS[f"{datetime.now().strftime("%H:%M:%S")} <-"] = m
     return "OK"
 
 
 @app.get("/msg")
 async def post_msg(m: str):
+    global ANSWERS
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_API}/sendMessage"
     payload = {
         'chat_id': CHAT_ID,
         'text': m
     }
     response = requests.post(url, json=payload)
-    return response.json()['ok']
+    if response.status_code == 200:
+        ANSWERS[f"{datetime.now().strftime("%H:%M:%S")} OK ->"] = m
+    else:
+        ANSWERS[f"{datetime.now().strftime("%H:%M:%S")} ER ->"] = m
+    return RedirectResponse(url="/ans")
 
 # Определение корневой страницы с формой загрузки файла
 @app.get("/pdf", response_class=HTMLResponse)
